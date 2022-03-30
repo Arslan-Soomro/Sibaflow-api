@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     
-    const users = await UserModel.find({});
+    const users = await UserModel.find({}, {password: 0});
 
     try{
         res.json(users);
