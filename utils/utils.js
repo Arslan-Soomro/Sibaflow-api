@@ -31,4 +31,8 @@ const hashEncrypt = async (strToEncrypt) => {
     return encryptedStr;
 };
 
+
+
+
+
 module.exports = { objHasVals, hashEncrypt }

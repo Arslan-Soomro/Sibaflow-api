@@ -13,6 +13,10 @@ app.use('/user', userRouter);
 mongoose.connect(connection.str, connection.options);
 const db = mongoose.connection;
 
+//TODO Let a user login
+// . Accept username and password, validate and grant access by providing a token
+// . Check if token is valid and then send back user data
+// . Create middleware to check for token automatically
 
 app.get('/', (req, res) => {
     res.send("You have reached Sibaflow API");

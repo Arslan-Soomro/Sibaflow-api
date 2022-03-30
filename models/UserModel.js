@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        unique: true,
         maxlength: 60,
     },
     cms: {
@@ -19,12 +20,14 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 11,
         maxlength: 11,
+        unique: true,
         trim: true
     },
     email: {
         type: String,
         maxlength: 60,
         trim: true,
+        unique: true,
     },
     password: {
         type: String,
