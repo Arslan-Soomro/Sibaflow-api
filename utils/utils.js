@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 
 /**
  * Returns true if all given properties are defined in the given obejct, otherwise false.
@@ -17,4 +19,16 @@ const objHasVals = (valsArr, obj) => {
     return false
 }
 
-module.exports = { objHasVals }
+/**
+ * takes a normal string and returns encrypted version of the string
+ * @param {String} strToEncrypt - String to encrypt
+ * @returns String
+ */
+
+const hashEncrypt = async (strToEncrypt) => {
+    const saltRounds = 10;
+    const encryptedStr = await bcrypt.hash(strToEncrypt, saltRounds);
+    return encryptedStr;
+};
+
+module.exports = { objHasVals, hashEncrypt }
