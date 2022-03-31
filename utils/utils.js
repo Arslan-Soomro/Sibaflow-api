@@ -1,4 +1,6 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 /**
@@ -24,15 +26,21 @@ const objHasVals = (valsArr, obj) => {
  * @param {String} strToEncrypt - String to encrypt
  * @returns String
  */
-
 const hashEncrypt = async (strToEncrypt) => {
     const saltRounds = 10;
     const encryptedStr = await bcrypt.hash(strToEncrypt, saltRounds);
     return encryptedStr;
 };
 
+const verifyToken = (token) => {
+    try{
+        //console.log("@token: " + token);
+        const data = jwt.verify(token, process.env.JWT_SECRET);
+        return data;
+    }catch(err){
+        console.log("Error@TokenAuthentication: " + err);  
+    }
+    return undefined;
+}
 
-
-
-
-module.exports = { objHasVals, hashEncrypt }
+module.exports = { objHasVals, hashEncrypt, verifyToken }
