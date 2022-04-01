@@ -7,7 +7,6 @@ const router = express.Router();
 const { objHasVals, hashEncrypt, verifyToken } = require("../utils/utils");
 const UserModel = require("../models/UserModel");
 
-//TODO add a check for duplicate usernames
 router.post("/signup", async (req, res) => {
   if (req.body != undefined) {
     const valsToCheck = ["name", "username", "cms", "email", "password"];
@@ -15,10 +14,19 @@ router.post("/signup", async (req, res) => {
 
     if (objHasVals(valsToCheck, dataObj)) {
       try {
-        dataObj.password = await hashEncrypt(req.body.password);
-        const newUser = new UserModel(dataObj);
-        await newUser.save();
-        res.status(200).json(newUser);
+
+        //Check if the same username already exists
+        const user = await UserModel.findOne({username: dataObj.username.toLowerCase()});
+
+        //If user with this username doesn't exist then register
+        if(user == null){
+          dataObj.password = await hashEncrypt(req.body.password);
+          const newUser = new UserModel(dataObj);
+          await newUser.save();
+          res.status(200).json(newUser);
+        }else{
+          res.status(400).json({message: 'This username is already in use'});
+        }
       } catch (err) {
         console.log("Error@Post-User: " + err);
         res.status(500).json({
@@ -47,12 +55,11 @@ router.post("/signin", async (req, res) => {
       //if Submitted Username and Password are not empty
 
       //Find user with submitted username
-      let userData = await UserModel.find({ username: reqUname });
+      let userData = await UserModel.findOne({ username: reqUname });
 
       //If user exist
-      if (userData.length > 0) {
+      if (userData == null) {
         userData = userData[0];
-      } else {
         //else send an error response
         res.status(400).json({ message: "Invalid Username" });
         return;
@@ -133,7 +140,6 @@ router.get("/", async (req, res) => {
   const users = await UserModel.find({}, { password: 0 });
 
   try {
-    console.log(req.header("token"));
     res.json(users);
   } catch (err) {
     console.log("Error@Get-User: " + err);
