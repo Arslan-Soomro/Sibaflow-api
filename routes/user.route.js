@@ -181,20 +181,25 @@ router.patch("/update", async (req, res) => {
         return ;
       }
 
+      //TODO check that there are no properties in the obj other then defined below
       const valsToCheck = ["name", "username", "cms", "email", "password"];
       let dataObj = req.body;
       const valsToUpdate = extractObjVals(valsToCheck, dataObj);
 
       //If there are fields to update
       if (valsToUpdate != null) {
-        const updatedUser = await UserModel.findByIdAndUpdate(tokenData._id, { ...valsToUpdate }, { returnDocument: "after"});
+        const updatedUser = await UserModel.findByIdAndUpdate(tokenData._id, { ...dataObj }, { returnDocument: "after"});
         res.status(200).json({message: 'Update Successful', data: updatedUser });
+        return ;
       }
       res.status(400).json({ message: "Nothing to update" });
+      return ;
     }
     res.status(401).json({message: 'Unauthorized Access, Invalid Token'});
+    return ;
   } catch (err) {
     res.status(500).json({message: "We are facing an issue while processing your request"});
+    return ;
   }
 });
 
