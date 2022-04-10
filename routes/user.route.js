@@ -4,9 +4,17 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 
-const { objHasVals, hashEncrypt, verifyToken } = require("../utils/utils");
+const {
+  objHasVals,
+  hashEncrypt,
+  verifyToken,
+  extractObjVals,
+} = require("../utils/utils");
 const UserModel = require("../models/UserModel");
 
+/**
+ * Handles User Signup
+ */
 router.post("/signup", async (req, res) => {
   if (req.body != undefined) {
     const valsToCheck = ["name", "username", "cms", "email", "password"];
@@ -14,18 +22,19 @@ router.post("/signup", async (req, res) => {
 
     if (objHasVals(valsToCheck, dataObj)) {
       try {
-
         //Check if the same username already exists
-        const user = await UserModel.findOne({username: dataObj.username.toLowerCase()});
+        const user = await UserModel.findOne({
+          username: dataObj.username.toLowerCase(),
+        });
 
         //If user with this username doesn't exist then register
-        if(user == null){
+        if (user == null) {
           dataObj.password = await hashEncrypt(req.body.password);
           const newUser = new UserModel(dataObj);
           await newUser.save();
           res.status(200).json(newUser);
-        }else{
-          res.status(400).json({message: 'This username is already in use'});
+        } else {
+          res.status(400).json({ message: "This username is already in use" });
         }
       } catch (err) {
         console.log("Error@Post-User: " + err);
@@ -45,21 +54,23 @@ router.post("/signup", async (req, res) => {
   });
 });
 
-//To login via username and password
+/**
+ * Handles User Signin Via Username and Password
+ */
 router.post("/signin", async (req, res) => {
   try {
-    if (reqUname != undefined && reqPass != undefined) {
-      const reqUname = req.body.username?.toLowerCase(); //Convert to lowercase to search in the database
-      const reqPass = req.body.password;
 
-      //if Submitted Username and Password are not empty
+    const reqUname = req.body.username?.toLowerCase(); //Convert to lowercase to search in the database
+    const reqPass = req.body.password;
+
+     //if Submitted Username and Password are not empty
+    if (reqUname != undefined && reqPass != undefined) {
 
       //Find user with submitted username
       let userData = await UserModel.findOne({ username: reqUname });
 
       //If user exist
       if (userData == null) {
-        userData = userData[0];
         //else send an error response
         res.status(400).json({ message: "Invalid Username" });
         return;
@@ -88,16 +99,17 @@ router.post("/signin", async (req, res) => {
     }
     res.status(400).json({ message: "One of the fields are missing" });
   } catch (err) {
+    //TODO Send back a message to user telling them that they are trying to use an email, username or cms_id that is already in use
     console.log("Error@User-POST-Signin: " + err.message);
-    res
-      .json(500)
-      .status({
-        message: "Server has faced some issue while processing your request",
-      });
+    res.json(500).status({
+      message: "Server has faced some issue while processing your request",
+    });
   }
 });
 
-//To login via token
+/**
+ * Handels User Signin Via Token
+ */
 router.get("/signin", async (req, res) => {
   try {
     const token = req.header("token");
@@ -118,12 +130,10 @@ router.get("/signin", async (req, res) => {
         { username: tokenData.username.toLowerCase() },
         { password: 0 }
       );
-      res
-        .status(200)
-        .json({
-          message: "Token Authenticated, Access Granted",
-          data: userData,
-        });
+      res.status(200).json({
+        message: "Token Authenticated, Access Granted",
+        data: userData,
+      });
 
       return;
     }
@@ -136,6 +146,9 @@ router.get("/signin", async (req, res) => {
   }
 });
 
+/**
+ * Handles Submitting Back All Users Data
+ */
 router.get("/", async (req, res) => {
   const users = await UserModel.find({}, { password: 0 });
 
@@ -147,6 +160,41 @@ router.get("/", async (req, res) => {
       message:
         "The Server has faced some problem while processing your request",
     });
+  }
+});
+
+/**
+ * Handles Updating Data for an existing user
+ */
+router.patch("/update", async (req, res) => {
+  try {
+    //First Validate Token
+    const token = req.header("token");
+    
+    if (token != undefined) {
+
+      let tokenData = verifyToken(token);
+
+      //If token is invalid, send back an error message
+      if (tokenData === undefined) {
+        res.status(401).json({ message: "Invalid Token" });
+        return ;
+      }
+
+      const valsToCheck = ["name", "username", "cms", "email", "password"];
+      let dataObj = req.body;
+      const valsToUpdate = extractObjVals(valsToCheck, dataObj);
+
+      //If there are fields to update
+      if (valsToUpdate != null) {
+        const updatedUser = await UserModel.findByIdAndUpdate(tokenData._id, { ...valsToUpdate }, { returnDocument: "after"});
+        res.status(200).json({message: 'Update Successful', data: updatedUser });
+      }
+      res.status(400).json({ message: "Nothing to update" });
+    }
+    res.status(401).json({message: 'Unauthorized Access, Invalid Token'});
+  } catch (err) {
+    res.status(500).json({message: "We are facing an issue while processing your request"});
   }
 });
 

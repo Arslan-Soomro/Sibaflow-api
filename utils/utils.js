@@ -22,6 +22,30 @@ const objHasVals = (valsArr, obj) => {
 }
 
 /**
+ * Takes in an array of keys, searches in obj for those keys and returns an array of keys that
+ * are present in both obj and keysArr. If there are no such keys then null is returned
+ * @param {Array<String>} keysArr 
+ * @param {Object} obj
+ * @returns  Array<String> | null
+ */
+const extractObjVals = (keysArr, obj) => {
+    const extractedKeys = [];
+    if(keysArr != undefined && obj != undefined){
+        for(let index in keysArr){
+            if(obj[keysArr[index]] != undefined){
+                extractedKeys.push(keysArr[index]);
+            }
+        }
+    }
+    
+    if(extractedKeys.length > 0){
+        return extractedKeys;
+    }
+    
+    return null;
+}
+
+/**
  * takes a normal string and returns encrypted version of the string
  * @param {String} strToEncrypt - String to encrypt
  * @returns String
@@ -43,4 +67,4 @@ const verifyToken = (token) => {
     return undefined;
 }
 
-module.exports = { objHasVals, hashEncrypt, verifyToken }
+module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken }
