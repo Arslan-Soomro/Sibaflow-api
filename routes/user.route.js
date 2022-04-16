@@ -12,6 +12,8 @@ const {
 } = require("../utils/utils");
 const UserModel = require("../models/UserModel");
 
+//TODO Get minimal user information, provided its ID
+
 /**
  * Handles User Signup
  */
@@ -59,13 +61,11 @@ router.post("/signup", async (req, res) => {
  */
 router.post("/signin", async (req, res) => {
   try {
-
     const reqUname = req.body.username?.toLowerCase(); //Convert to lowercase to search in the database
     const reqPass = req.body.password;
 
-     //if Submitted Username and Password are not empty
+    //if Submitted Username and Password are not empty
     if (reqUname != undefined && reqPass != undefined) {
-
       //Find user with submitted username
       let userData = await UserModel.findOne({ username: reqUname });
 
@@ -101,7 +101,7 @@ router.post("/signin", async (req, res) => {
   } catch (err) {
     //TODO Send back a message to user telling them that they are trying to use an email, username or cms_id that is already in use
     console.log("Error@User-POST-Signin: " + err.message);
-    res.json(500).status({
+    res.status(500).json({
       message: "Server has faced some issue while processing your request",
     });
   }
@@ -170,15 +170,14 @@ router.patch("/update", async (req, res) => {
   try {
     //First Validate Token
     const token = req.header("token");
-    
-    if (token != undefined) {
 
+    if (token != undefined) {
       let tokenData = verifyToken(token);
 
       //If token is invalid, send back an error message
       if (tokenData === undefined) {
         res.status(401).json({ message: "Invalid Token" });
-        return ;
+        return;
       }
 
       //TODO check that there are no properties in the obj other then defined below
@@ -188,18 +187,28 @@ router.patch("/update", async (req, res) => {
 
       //If there are fields to update
       if (valsToUpdate != null) {
-        const updatedUser = await UserModel.findByIdAndUpdate(tokenData._id, { ...dataObj }, { returnDocument: "after"});
-        res.status(200).json({message: 'Update Successful', data: updatedUser });
-        return ;
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          tokenData._id,
+          { ...dataObj },
+          { returnDocument: "after", fields: { password: 0 } }
+        );
+        res
+          .status(200)
+          .json({ message: "Update Successful", data: updatedUser });
+        return;
       }
       res.status(400).json({ message: "Nothing to update" });
-      return ;
+      return;
     }
-    res.status(401).json({message: 'Unauthorized Access, Invalid Token'});
-    return ;
+    res.status(401).json({ message: "Unauthorized Access, Invalid Token" });
+    return;
   } catch (err) {
-    res.status(500).json({message: "We are facing an issue while processing your request"});
-    return ;
+    res
+      .status(500)
+      .json({
+        message: "We are facing an issue while processing your request",
+      });
+    return;
   }
 });
 

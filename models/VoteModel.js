@@ -23,4 +23,4 @@ const VoteSchema = new mongoose.Schema({
 
 const VoteModel = new mongoose.Schema(VoteSchema);
 
-export default VoteModel;
+module.exports = VoteModel;

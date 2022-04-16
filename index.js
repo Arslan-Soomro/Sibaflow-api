@@ -3,12 +3,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const connection = require("./utils/connection");
 const userRouter = require("./routes/user.route");
+const postRouter = require("./routes/post.route");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 //Connect To MongoDB
 mongoose.connect(connection.str, connection.options);
 const db = mongoose.connection;

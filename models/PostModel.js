@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const PostSchema = new mongoose.Schema({
     //The user id of the user who created the post
     u_id : {
-        type: ObjectId,
+        type: mongoose.Types.ObjectId,
         required: true,
         trim: true,
     },
@@ -16,9 +16,12 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 6
+    },
+    tags: {
+        type: [String],
     }
 });
 
 const PostModel = mongoose.model("Post", PostSchema);
 
-export default PostModel;
+module.exports = PostModel;
