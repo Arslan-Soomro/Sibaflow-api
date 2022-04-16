@@ -8,7 +8,7 @@ const {
   objHasVals,
   hashEncrypt,
   verifyToken,
-  extractObjVals,
+  createObjVals,
 } = require("../utils/utils");
 const UserModel = require("../models/UserModel");
 
@@ -183,13 +183,13 @@ router.patch("/update", async (req, res) => {
       //TODO check that there are no properties in the obj other then defined below
       const valsToCheck = ["name", "username", "cms", "email", "password"];
       let dataObj = req.body;
-      const valsToUpdate = extractObjVals(valsToCheck, dataObj);
+      const valsToUpdate = createObjVals(valsToCheck, dataObj);
 
       //If there are fields to update
       if (valsToUpdate != null) {
         const updatedUser = await UserModel.findByIdAndUpdate(
           tokenData._id,
-          { ...dataObj },
+          { ...valsToUpdate }, //If Faced with problems spread dataObj here rather than valsToUpdate
           { returnDocument: "after", fields: { password: 0 } }
         );
         res

@@ -45,6 +45,28 @@ const extractObjVals = (keysArr, obj) => {
     return null;
 }
 
+const createObjVals = (keysArr, obj) => {
+    const extractedKeys = [];
+    if(keysArr != undefined && obj != undefined){
+        for(let index in keysArr){
+            if(obj[keysArr[index]] != undefined){
+                extractedKeys.push(keysArr[index]);
+            }
+        }
+    }
+    
+    let newObj = {};
+
+    if(extractedKeys.length > 0){
+        for (const key in extractedKeys){
+            newObj[extractedKeys[key]] = obj[extractedKeys[key]];
+        }
+        return newObj
+    }
+    
+    return null;
+}
+
 /**
  * takes a normal string and returns encrypted version of the string
  * @param {String} strToEncrypt - String to encrypt
@@ -67,4 +89,4 @@ const verifyToken = (token) => {
     return undefined;
 }
 
-module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken }
+module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken, createObjVals }
