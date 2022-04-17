@@ -5,23 +5,6 @@ const PostModel = require("../models/PostModel");
 const { verifyToken, objHasVals, createObjVals } = require("../utils/utils");
 const router = express.Router();
 
-//With every request that carries a token, the token is verified here
-router.use((req, res, next) => {
-  //Extract token from header
-  const token = req.header("token");
-
-  if (token != undefined) {
-    //If token exists
-    let tokenData = verifyToken(token); //Verify Token
-    if (tokenData != undefined) {
-      //Verified Token
-      req.body.IT_DATA = tokenData; //
-    }
-  }
-
-  next();
-});
-
 //If Id is provided, post with that id is fetched otherwise all posts are fetched
 router.get("/", async (req, res) => {
   const id = req.query.id;
@@ -33,7 +16,7 @@ router.get("/", async (req, res) => {
       posts = await PostModel.find({});
     } else {
       //Returns null if no post with such id exist
-      posts = await PostModel.findById(id); //FIXME throws if id is incorrect
+      posts = await PostModel.findById(id); //FIXME, throws error if id is incorrect
     }
 
     res.status(200).json(posts);
@@ -146,6 +129,7 @@ router.patch("/", async (req, res) => {
   }
 });
 
+//Deletes a Post
 router.delete("/", async (req, res) => {
     try {
       const p_id = req.body.id;

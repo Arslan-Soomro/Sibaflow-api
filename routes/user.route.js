@@ -112,18 +112,11 @@ router.post("/signin", async (req, res) => {
  */
 router.get("/signin", async (req, res) => {
   try {
-    const token = req.header("token");
+    
+    const tokenData = req.body.IT_DATA
 
     //If We have received a token
-    if (token != undefined) {
-      //Verify token and extract its data
-      let tokenData = verifyToken(token);
-
-      //If token is invalid, send back an error message
-      if (tokenData === undefined) {
-        res.status(401).json({ message: "Invalid Token" });
-        return;
-      }
+    if (tokenData != undefined) {
 
       //If token is valid, Return back all user data except password
       let userData = await UserModel.findOne(
@@ -168,17 +161,10 @@ router.get("/", async (req, res) => {
  */
 router.patch("/update", async (req, res) => {
   try {
-    //First Validate Token
-    const token = req.header("token");
+    
+    const tokenData = req.body.IT_DATA
 
-    if (token != undefined) {
-      let tokenData = verifyToken(token);
-
-      //If token is invalid, send back an error message
-      if (tokenData === undefined) {
-        res.status(401).json({ message: "Invalid Token" });
-        return;
-      }
+    if (tokenData != undefined) {
 
       //TODO check that there are no properties in the obj other then defined below
       const valsToCheck = ["name", "username", "cms", "email", "password"];
