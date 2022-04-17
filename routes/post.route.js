@@ -93,7 +93,7 @@ router.patch("/", async (req, res) => {
             const prevPost = await PostModel.find({u_id: mongoose.Types.ObjectId(u_id), _id: mongoose.Types.ObjectId(p_id)});
             
             if(prevPost === null){
-                res.status(400).json({message: "You don't have the permission to edit this Post"});
+                res.status(403).json({message: "You don't have the permission to edit this Post"});
                 return ;
             }
 

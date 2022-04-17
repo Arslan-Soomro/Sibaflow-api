@@ -100,11 +100,27 @@ const verifyToken = (token) => {
  * @param {Number} code 
  * @param {String} message 
  */
-const throwErr = (code, message) => {
+const throwErr = (code, message, location) => {
     throw {
         code,
-        message
+        message,
+        location
+    }
+};
+
+const resErr = (res, code, message, location) => {
+    if(code === 400){
+        res.status(code).json({message: 'Bad Request, Some of the entries are missing'});
+    }else if(code === 401){
+        res.status(code).json({message: 'Invalid Access Token'});
+    }else if(code === 403){
+        res.status(code).json({message: 'You don not have the permission to perform this action'});
+    }else if(code === 404){
+        res.status(code).json({message: 'Could Not Find'});
+    }else{
+        console.log(`Error@${location}: ${message}`);
+        res.status(500).json({message: 'Server has faced some issue while processing your request'});
     }
 }
 
-module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken, createObjVals, throwErr }
+module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken, createObjVals, throwErr, resErr }
