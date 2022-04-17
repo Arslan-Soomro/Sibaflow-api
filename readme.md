@@ -8,7 +8,7 @@ User route is used for accessing and updating user data.
 
  
 
-##### User/
+#### User/
 
 **VERB : GET**
 
@@ -16,7 +16,7 @@ Server responds with data of all the users that exist in the database
 
  
 
-##### user/signup
+#### user/signup
 
 **VERB : POST**
 
@@ -36,7 +36,7 @@ Server requires below body fields
 
 
 
-##### user/signin
+#### user/signin
 
 **VERB : POST**
 
@@ -50,7 +50,7 @@ Server requires below body fields
 
 
 
-##### user/signin
+#### user/signin
 
 **VERB : GET**
 
@@ -62,7 +62,7 @@ Server requires below header fields
 
 
 
-##### user/update
+#### user/update
 
 **VERB : PATCH**
 
@@ -92,7 +92,7 @@ Post route is used for accessing and updating Post data.
 
 
 
-##### post/
+#### post/
 
 **VERB : GET**
 
@@ -104,7 +104,7 @@ if **u_id** query parameter is used, then server responds with the posts of tha 
 
 
 
-##### post/
+#### post/
 
 **VERB : POST**
 
@@ -122,7 +122,7 @@ Server requires below body fields
 
 
 
-##### post/
+#### post/
 
 **VERB : PATCH**
 
@@ -144,7 +144,7 @@ Server requires any of below body fields to update
 
 
 
-##### post/
+#### post/
 
 **VERB : DELETE**
 
@@ -166,7 +166,7 @@ Comment route is used to access and update data of comment data.
 
 
 
-##### /comment
+#### /comment
 
 **VERB : GET**
 
@@ -178,7 +178,7 @@ if **u_id** query parameter is used, then server responds with the comments of t
 
 
 
-##### /comment
+#### /comment
 
 **VERB :  POST**
 
@@ -196,7 +196,7 @@ Server requires below body fields
 
 
 
-##### /comment
+#### /comment
 
 **VERB : PATCH**
 
@@ -214,7 +214,7 @@ Server requires below body fields
 
 
 
-##### /comment
+#### /comment
 
 **VERB : DELETE**
 
