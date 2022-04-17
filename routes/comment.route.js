@@ -6,7 +6,34 @@ const PostModel = require('../models/PostModel');
 const { throwErr, resErr } = require('../utils/utils');
 const { objHasVals } = require('../utils/utils');
 
-//TODO Create A Comment
+
+//Retrieves all comments, if id is provided only one comment with that id is provided, if p_id is provided all comments from that post are retrieved
+router.get('/', async(req, res) => {
+    const id = req.query.id;
+    const p_id = req.query._id;
+
+    try {
+      let comments;
+        
+      if(id !== undefined){
+        comments = await CommentModel.findById(id); //FIXME, throws error if id is incorrect
+      }else if(p_id != undefined){
+        comments = await CommentModel.find({p_id: mongoose.Types.ObjectId(p_id)});
+      }else {
+        comments = await CommentModel.find({});
+      } 
+
+      res.status(200).json(comments);
+    } catch (err) {
+      console.log("Error@Get-Posts: " + err);
+      res.status(500).json({
+        message:
+          "The Server has faced some problem while processing your request",
+      });
+    }
+});
+
+//Creates A Comment
 router.post('/', async (req, res) => {
     const u_id = req.body.IT_DATA?._id;
     const p_id = req.body.p_id;
@@ -58,5 +85,25 @@ router.patch('/', async (req, res) => {
         resErr(res, err.code, err.message, 'UpdateComment');
     }
 });
+
+//Deletes A Comment
+router.delete('/', async (req, res) => {
+    const u_id = req.body.IT_DATA?._id;
+    const id = req.body.id; //ID of the comment to be deleted;
+
+    try{
+        if(u_id != undefined){
+            if(id){
+                const prevComment = await CommentModel.findOne({ _id: mongoose.Types.ObjectId(id), u_id: mongoose.Types.ObjectId(u_id) });
+                if(prevComment === null) throwErr(403)
+                const deletedComment = await CommentModel.findByIdAndDelete(id);
+                res.status(200).json({message: 'Comment Deleted Successfully', data: deletedComment});
+            }else throwErr(400);
+        }else throwErr(401);
+    }catch(err){
+        resErr(res, err.code, err.message, 'DeleteComment');
+    }
+});
+
 
 module.exports = router;
