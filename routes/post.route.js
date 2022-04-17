@@ -130,6 +130,7 @@ router.patch("/", async (req, res) => {
 });
 
 //Deletes a Post
+//TODO delete all related comments and votes
 router.delete("/", async (req, res) => {
     try {
       const p_id = req.body.id;

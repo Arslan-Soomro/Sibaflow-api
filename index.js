@@ -4,13 +4,13 @@ const mongoose = require("mongoose");
 const connection = require("./utils/connection");
 const userRouter = require("./routes/user.route");
 const postRouter = require("./routes/post.route");
+const commentRouter = require("./routes/comment.route");
+const { verifyToken } = require("./utils/utils");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use("/user", userRouter);
-app.use("/post", postRouter);
 //Connect To MongoDB
 mongoose.connect(connection.str, connection.options);
 const db = mongoose.connection;
@@ -31,6 +31,10 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use("/user", userRouter);
+app.use("/post", postRouter);
+app.use("/comment", commentRouter);
 
 app.get("/", (req, res) => {
   res.send("You have reached Sibaflow API");

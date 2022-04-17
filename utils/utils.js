@@ -45,6 +45,12 @@ const extractObjVals = (keysArr, obj) => {
     return null;
 }
 
+/**
+ * Creates a new object that only contains keys that are present in keysArr and obj
+ * @param {Array<String>} keysArr 
+ * @param {Object} obj 
+ * @returns Object | null
+ */
 const createObjVals = (keysArr, obj) => {
     const extractedKeys = [];
     if(keysArr != undefined && obj != undefined){
@@ -87,6 +93,18 @@ const verifyToken = (token) => {
         console.log("Error@TokenAuthentication: " + err);  
     }
     return undefined;
+};
+ 
+/**
+ * Throws an error
+ * @param {Number} code 
+ * @param {String} message 
+ */
+const throwErr = (code, message) => {
+    throw {
+        code,
+        message
+    }
 }
 
-module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken, createObjVals }
+module.exports = { objHasVals, extractObjVals, hashEncrypt, verifyToken, createObjVals, throwErr }

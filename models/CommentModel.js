@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const CommentSchema = new mongoose.Schema({
     //User id person who has commented
     u_id : {
-        type: ObjectId,
+        type: mongoose.Types.ObjectId,
         required: true,
         trim: true
     },
     //post id of the post the comment was wrote for
     p_id : {
-        type: ObjectId,
+        type: mongoose.Types.ObjectId,
         required: true,
         trim: true
     },
@@ -22,6 +22,6 @@ const CommentSchema = new mongoose.Schema({
     }
 });
 
-const CommentModel = mongoose.model(CommentSchema);
+const CommentModel = mongoose.model("Comment", CommentSchema);
 
 module.exports = CommentModel;
