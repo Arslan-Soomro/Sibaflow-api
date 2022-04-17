@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-//TODO Edit A Comment
+//Updates a comment
 router.patch('/', async (req, res) => {
     const u_id = req.body.IT_DATA?._id;
     const id = req.body.id; //Id of this comment i.e that needs to be updated

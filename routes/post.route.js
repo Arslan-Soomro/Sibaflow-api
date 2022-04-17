@@ -12,11 +12,14 @@ router.get("/", async (req, res) => {
   try {
     let posts;
 
-    if (id === undefined) {
-      posts = await PostModel.find({});
-    } else {
+    if (id !== undefined) {
       //Returns null if no post with such id exist
       posts = await PostModel.findById(id); //FIXME, throws error if id is incorrect
+    }else if(u_id != undefined){
+      posts = await PostModel.find({u_id: mongoose.Types.ObjectId(u_id)});
+    } else {
+      posts = await PostModel.find({});
+      
     }
 
     res.status(200).json(posts);
@@ -29,21 +32,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-//For getting Posts of a specific user
-router.get("/user/:u_id", async (req, res) => {
-  const u_id = req.params.u_id;
-
-  try {
-    const posts = await PostModel.find({ u_id: mongoose.Types.ObjectId(u_id) });
-    res.status(200).json(posts);
-  } catch (err) {
-    console.log("Error@Post/User/:UID : " + err.message);
-    res.status(500).json({
-      message:
-        "The Server has faced some problem while processing your request",
-    });
-  }
-});
 
 //For Creating a post
 router.post("/", async (req, res) => {
